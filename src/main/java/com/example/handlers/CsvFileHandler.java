@@ -20,12 +20,12 @@ public class CsvFileHandler implements CrudOperations {
         boolean fileExists = new File(FILE_PATH).exists();
 
         try (CSVWriter writer = new CSVWriter(new FileWriter(FILE_PATH, true))) {
-            if (!fileExists) {
-                writer.writeNext(new String[]{"Name", "Email"});
-            }
+            if (!fileExists) writer.writeNext(new String[]{"Name", "Email"});
             writer.writeNext(new String[]{name, email});
         }
         System.out.println("Record added successfully.");
+        SFTPHandler sftp = new SFTPHandler();
+        sftp.uploadFile(FILE_PATH, "/home/sftpuser/upload/data.csv"); 
     }
 
     @Override
@@ -112,6 +112,7 @@ public class CsvFileHandler implements CrudOperations {
         System.out.print("Enter Email: ");
         String email = sc.nextLine();
         create(name, email);
+        sc.close();
     }
 
     public void update() throws Exception {
@@ -123,6 +124,7 @@ public class CsvFileHandler implements CrudOperations {
         System.out.print("Enter new Email: ");
         String newEmail = sc.nextLine();
         update(oldName, newName, newEmail);
+        sc.close();
     }
 
     public void delete() throws Exception {
@@ -130,6 +132,7 @@ public class CsvFileHandler implements CrudOperations {
         System.out.print("Enter Name to Delete: ");
         String nameToDelete = sc.nextLine();
         delete(nameToDelete);
+        sc.close();
     }
 }
 
