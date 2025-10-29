@@ -1,12 +1,17 @@
 package com.example.main;
 
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 import com.example.handlers.CsvFileHandler;
+//import com.example.handlers.SFTPHandler;
 import com.example.interfaces.CrudOperations;
 
 public class Main {
+    private static final Logger LOG = Logger.getLogger(Main.class.getName());
+
     public static void main(String[] args) {
+    	
         Scanner sc = new Scanner(System.in);
         CrudOperations handler = new CsvFileHandler();
 

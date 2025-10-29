@@ -6,12 +6,14 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 import com.example.interfaces.CrudOperations;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
 public class CsvFileHandler implements CrudOperations {
+    private static final Logger LOG = Logger.getLogger(CsvFileHandler.class.getName());
 
     private static final String FILE_PATH = "data.csv";
 
@@ -23,22 +25,22 @@ public class CsvFileHandler implements CrudOperations {
             if (!fileExists) writer.writeNext(new String[]{"Name", "Email"});
             writer.writeNext(new String[]{name, email});
         }
-        System.out.println("Record added successfully.");
-        SFTPHandler sftp = new SFTPHandler();
-        sftp.uploadFile(FILE_PATH, "/home/sftpuser/upload/data.csv"); 
+        LOG.info("Record added successfully.");
+        //SFTPHandler sftp = new SFTPHandler();
+        //sftp.uploadFile(FILE_PATH);
     }
 
     @Override
     public List<String[]> read() throws Exception {
         File file = new File(FILE_PATH);
         if (!file.exists()) {
-            System.out.println("CSV file not found!");
+            LOG.info("CSV file not found!");
             return new ArrayList<>();
         }
 
         try (CSVReader reader = new CSVReader(new FileReader(FILE_PATH))) {
             List<String[]> allRecords = reader.readAll();
-            allRecords.forEach(record -> System.out.println(String.join(", ", record)));
+            allRecords.forEach(record -> LOG.info(String.join(", ", record)));
             return allRecords;
         }
     }
@@ -48,7 +50,7 @@ public class CsvFileHandler implements CrudOperations {
     public boolean update(String oldName, String newName, String newEmail) throws Exception {
         File file = new File(FILE_PATH);
         if (!file.exists()) {
-            System.out.println("CSV file not found!");
+            LOG.info("CSV file not found!");
             return false;
         }
 
@@ -70,9 +72,9 @@ public class CsvFileHandler implements CrudOperations {
             try (CSVWriter writer = new CSVWriter(new FileWriter(FILE_PATH))) {
                 writer.writeAll(allRecords);
             }
-            System.out.println("Record updated successfully!");
+            LOG.info("Record updated successfully!");
         } else {
-            System.out.println("Name not found!");
+            LOG.info("Name not found!");
         }
         return updated;
     }
@@ -82,7 +84,7 @@ public class CsvFileHandler implements CrudOperations {
     public boolean delete(String nameToDelete) throws Exception {
         File file = new File(FILE_PATH);
         if (!file.exists()) {
-            System.out.println("CSV file not found!");
+            LOG.info("CSV file not found!");
             return false;
         }
 
@@ -97,9 +99,9 @@ public class CsvFileHandler implements CrudOperations {
             try (CSVWriter writer = new CSVWriter(new FileWriter(FILE_PATH))) {
                 writer.writeAll(allRecords);
             }
-            System.out.println("Record deleted successfully!");
+            LOG.info("Record deleted successfully!");
         } else {
-            System.out.println("Name not found!");
+            LOG.info("Name not found!");
         }
         return deleted;
     }
